@@ -1,9 +1,14 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
-//import { Request } from 'express';
+import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
+import { Request } from 'express';
+
+interface Product {
+  id: number;
+  title: string;
+}
 
 @Controller('products') 
 export class ProductsController {
- private products: {id: number, title: string}[] = [
+ private products: Product[] = [
   {id: 1, title: 'First Product'},
   {id: 2, title: 'Second Product'},
   {id: 3, title: 'Third Product'},
@@ -20,12 +25,25 @@ export class ProductsController {
   //   return this.products.filter(product => product.id === +req.params.id) ;
   // }
   getProductsById(@Param('id') id: string) {
-    const filteredProducts = this.products.filter(product => product.id === +id) ;
-    if (filteredProducts.length) {
-      return filteredProducts
+    const product = this.products.find(product => product.id === +id) ;
+    if (product) {
+      return product
     }
     
     return "Product not found"
+  }
+
+  @Post()
+  addProduct(@Req() req: Request): Product {
+    const { id, ...productData } = req.body; // Delete existing id
+    const createdProduct = { id: this.products.length + 1, ...productData };
+    this.products.push(createdProduct);
+    return createdProduct;
+  }
+
+  @Delete(':id') // ** /products/:id
+  remove(@Param('id') id: string){
+   return this.products.filter(product => product.id !== +id);
   }
 }
 
