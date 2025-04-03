@@ -1,4 +1,13 @@
-import { Controller, Delete, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Req,
+} from '@nestjs/common';
 import { Request } from 'express';
 
 interface Product {
@@ -6,13 +15,13 @@ interface Product {
   title: string;
 }
 
-@Controller('products') 
+@Controller('products')
 export class ProductsController {
- private products: Product[] = [
-  {id: 1, title: 'First Product'},
-  {id: 2, title: 'Second Product'},
-  {id: 3, title: 'Third Product'},
-];
+  private products: Product[] = [
+    { id: 1, title: 'First Product' },
+    { id: 2, title: 'Second Product' },
+    { id: 3, title: 'Third Product' },
+  ];
 
   @Get() // ** /products
   getProducts() {
@@ -25,12 +34,12 @@ export class ProductsController {
   //   return this.products.filter(product => product.id === +req.params.id) ;
   // }
   getProductsById(@Param('id') id: string) {
-    const product = this.products.find(product => product.id === +id) ;
+    const product = this.products.find((product) => product.id === +id);
     if (product) {
-      return product
+      return product;
     }
-    
-    return "Product not found"
+
+    return 'Product not found';
   }
 
   @Post()
@@ -42,8 +51,19 @@ export class ProductsController {
   }
 
   @Delete(':id') // ** /products/:id
-  remove(@Param('id') id: string){
-   return this.products.filter(product => product.id !== +id);
+  remove(@Param('id') id: string) {
+    return this.products.filter((product) => product.id !== +id);
+  }
+
+  @Put(':id') // ** /products/:id
+  update(@Param('id') id: string, @Body() body: Product): Product | string {
+    const index = this.products.findIndex((product) => product.id === +id);
+    if (index !== -1) {
+      const updatedProduct = body;
+      this.products[index] = { ...this.products[index], ...updatedProduct };
+      return this.products[index];
+    }
+
+    return 'Product not found';
   }
 }
-
