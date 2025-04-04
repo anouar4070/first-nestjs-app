@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -17,6 +25,11 @@ export class PostsController {
     return this.postsService.findAll();
   }
 
+  @Get('ab*cd')
+  getWildcard() {
+    return 'This route uses a wildcard';
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.postsService.findOne(+id);
@@ -30,5 +43,12 @@ export class PostsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.postsService.remove(+id);
+  }
+
+  @Get('*')
+  notFound() {
+    return {
+      message: 'Route not found!',
+    };
   }
 }
