@@ -32,36 +32,21 @@ export class ProductsController {
   //   return this.products.filter(product => product.id === +req.params.id) ;
   // }
   getProductsById(@Param('id') id: string) {
-    const product = this.productsService.getProducts().find((product) => product.id === +id);
-    if (product) {
-      return product;
-    }
-
-    return 'Product not found';
+    return this.productsService.getSingleProduct(+id)
   }
 
   @Post()
-  addProduct(@Req() req: Request): Product {
-    const { id, ...productData } = req.body; // Delete existing id
-    const createdProduct = { id: this.productsService.getProducts().length + 1, ...productData };
-    this.productsService.getProducts().push(createdProduct);
-    return createdProduct;
+  addProduct(@Body() body: Product): Product {
+   return this.productsService.createNew(body)
   }
 
   @Delete(':id') // ** /products/:id
   remove(@Param('id') id: string) {
-    return this.productsService.getProducts().filter((product) => product.id !== +id);
+    return this.productsService.deleteProduct(+id)
   }
 
   @Put(':id') // ** /products/:id
   update(@Param('id') id: string, @Body() body: Product): Product | string {
-    const index = this.productsService.getProducts().findIndex((product) => product.id === +id);
-    if (index !== -1) {
-      const updatedProduct = body;
-      this.productsService.getProducts()[index] = { ...this.productsService.getProducts()[index], ...updatedProduct };
-      return this.productsService.getProducts()[index];
-    }
-
-    return 'Product not found';
+    return this.productsService.updateProduct(+id, body)
   }
 }
