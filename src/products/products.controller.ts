@@ -8,10 +8,13 @@ import {
   Post,
   Put,
   Req,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { ProductsService } from './products.service';
 import { Product } from 'src/interfaces/products';
+import { CreateProductDto } from './dto/create-products.dto';
 
 
 
@@ -45,8 +48,9 @@ export class ProductsController {
   }
 
   @Post()
-  addProduct(@Body() body: Product): Product {
-   return this.productsService.createNew(body)
+  @UsePipes(ValidationPipe) // ✅ Apply validation to the request body 
+  addProduct(@Body() createProductDto: CreateProductDto): Product {
+   return this.productsService.createNew(createProductDto)
   }
 
   @Delete(':id') // ** /products/:id

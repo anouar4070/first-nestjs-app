@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Product } from 'src/interfaces/products';
+import { CreateProductDto } from './dto/create-products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -22,7 +23,17 @@ getSingleProduct(id: number): Product | string{
   return 'Product not found';
 }
 
-createNew(product: Omit<Product, 'id'>) {
+// * Using Omit
+// createNew(product: Omit<Product, 'id'>) {
+//   const newProduct = {
+//     id: this.products.length + 1,
+//     ...product,
+//   };
+//   this.products.push(newProduct);
+//   return newProduct;
+// }
+
+createNew(product: CreateProductDto) {
   const newProduct = {
     id: this.products.length + 1,
     ...product,
