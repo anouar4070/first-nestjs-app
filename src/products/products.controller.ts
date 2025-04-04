@@ -9,23 +9,21 @@ import {
   Req,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { ProductsService } from './products.service';
+import { Product } from 'src/interfaces/products';
 
-interface Product {
-  id: number;
-  title: string;
-}
+
 
 @Controller('products')
 export class ProductsController {
-  private products: Product[] = [
-    { id: 1, title: 'First Product' },
-    { id: 2, title: 'Second Product' },
-    { id: 3, title: 'Third Product' },
-  ];
+
+  constructor(private productsService: ProductsService) {
+
+  }
 
   @Get() // ** /products
   getProducts() {
-    return this.products;
+    return this.productsService.getProducts();
   }
 
   @Get(':id') // ** /products/:id
@@ -34,7 +32,7 @@ export class ProductsController {
   //   return this.products.filter(product => product.id === +req.params.id) ;
   // }
   getProductsById(@Param('id') id: string) {
-    const product = this.products.find((product) => product.id === +id);
+    const product = this.productsService.getProducts().find((product) => product.id === +id);
     if (product) {
       return product;
     }
@@ -45,23 +43,23 @@ export class ProductsController {
   @Post()
   addProduct(@Req() req: Request): Product {
     const { id, ...productData } = req.body; // Delete existing id
-    const createdProduct = { id: this.products.length + 1, ...productData };
-    this.products.push(createdProduct);
+    const createdProduct = { id: this.productsService.getProducts().length + 1, ...productData };
+    this.productsService.getProducts().push(createdProduct);
     return createdProduct;
   }
 
   @Delete(':id') // ** /products/:id
   remove(@Param('id') id: string) {
-    return this.products.filter((product) => product.id !== +id);
+    return this.productsService.getProducts().filter((product) => product.id !== +id);
   }
 
   @Put(':id') // ** /products/:id
   update(@Param('id') id: string, @Body() body: Product): Product | string {
-    const index = this.products.findIndex((product) => product.id === +id);
+    const index = this.productsService.getProducts().findIndex((product) => product.id === +id);
     if (index !== -1) {
       const updatedProduct = body;
-      this.products[index] = { ...this.products[index], ...updatedProduct };
-      return this.products[index];
+      this.productsService.getProducts()[index] = { ...this.productsService.getProducts()[index], ...updatedProduct };
+      return this.productsService.getProducts()[index];
     }
 
     return 'Product not found';
