@@ -15,6 +15,7 @@ import { Request } from 'express';
 import { ProductsService } from './products.service';
 import { Product } from 'src/interfaces/products';
 import { CreateProductDto } from './dto/create-products.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 
 
@@ -58,8 +59,13 @@ export class ProductsController {
     return this.productsService.deleteProduct(id)
   }
 
+  // @Put(':id') // ** /products/:id
+  // update(@Param('id') id: string, @Body() body: Product): Product | string {
+  //   return this.productsService.updateProduct(+id, body)
+  // }
+
   @Put(':id') // ** /products/:id
-  update(@Param('id') id: string, @Body() body: Product): Product | string {
-    return this.productsService.updateProduct(+id, body)
+  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto): Product | string {
+    return this.productsService.updateProduct(+id, updateProductDto)
   }
 }
