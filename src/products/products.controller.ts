@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Req,
@@ -17,7 +18,7 @@ import { Product } from 'src/interfaces/products';
 @Controller('products')
 export class ProductsController {
 
-  constructor(private productsService: ProductsService) {
+  constructor(private readonly productsService: ProductsService) {
 
   }
 
@@ -27,12 +28,20 @@ export class ProductsController {
   }
 
   @Get(':id') // ** /products/:id
+
+  //* use of req from express
   // getProductsById(@Req() req: Request) {
   //   console.log(req.params)
   //   return this.products.filter(product => product.id === +req.params.id) ;
   // }
-  getProductsById(@Param('id') id: string) {
-    return this.productsService.getSingleProduct(+id)
+
+  //* without Pipe
+  // getProductsById(@Param('id') id: string) {
+  //   return this.productsService.getSingleProduct(+id)
+  // }
+  //* using Pipe
+  getProductsById(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.getSingleProduct(id)
   }
 
   @Post()
@@ -41,8 +50,8 @@ export class ProductsController {
   }
 
   @Delete(':id') // ** /products/:id
-  remove(@Param('id') id: string) {
-    return this.productsService.deleteProduct(+id)
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.deleteProduct(id)
   }
 
   @Put(':id') // ** /products/:id
