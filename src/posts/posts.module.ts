@@ -19,16 +19,24 @@ export class PostsModule implements NestModule {
     //consumer.apply(PostsMiddleware).exclude('posts');
     consumer
       .apply(PostsMiddleware)
+      // .exclude(
+      //   {
+      //     path: 'posts/:id',
+      //     method: RequestMethod.GET,
+      //   },
+      //   {
+      //     path: 'posts/:id',
+      //     method: RequestMethod.DELETE,
+      //   },
+      // )
+      // .forRoutes('posts');
       .exclude(
         {
-          path: 'posts/:id',
-          method: RequestMethod.GET,
+          path: 'posts',
+          method: RequestMethod.POST,
         },
-        {
-          path: 'posts/:id',
-          method: RequestMethod.DELETE,
-        },
+        'posts/(.*)',
       )
-      .forRoutes('posts');
+      .forRoutes(PostsController);
   }
 }

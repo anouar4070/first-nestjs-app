@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 @Injectable()
 export class PostsMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: () => void) {
-    console.log('From PostsMiddleware...');
+    console.log(req.method.toUpperCase(), req.url);
     next();
   }
 }

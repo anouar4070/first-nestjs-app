@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { ChatModule } from './chat/chat.module';
 import { PostsModule } from './posts/posts.module';
+import { AuthMiddleware } from './middlewares/auth/auth.middleware';
 
 
 @Module({
@@ -13,4 +14,8 @@ import { PostsModule } from './posts/posts.module';
   exports: []
   
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+      consumer.apply(AuthMiddleware).forRoutes('*')
+  }
+}
